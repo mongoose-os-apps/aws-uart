@@ -1,0 +1,56 @@
+author: bravokeyl <bravokeyl@gmail.com>
+description: Reading UART0 and sending the data to AWS IoT
+version: 1.0.0
+
+# You can remove this if you want to build for other boards
+arch: esp8266
+
+# Optional. List of tags for online search.
+tags:
+  - js
+  - cloud
+  - aws
+  - example
+  - uart
+
+# List of files / directories with C sources. No slashes at the end of dir names.
+sources:
+  - src
+
+# List of dirs. Files from these dirs will be copied to the device filesystem
+filesystem:
+  - fs
+
+# Custom configuration entries, settable via "device configuration"
+config_schema:
+  - ["mqtt.enable", true]
+  - ["mqtt.server", "xxxxxxxx.iot.us-east-1.amazonaws.com:8883"]
+  - ["mqtt.ssl_ca_cert", "ca-verisign-ecc-g2.crt.pem"]
+  - ["mqtt.ssl_cert", "aws-iot-xxxxx.crt.pem"]
+  - ["mqtt.ssl_key", "aws-iot-xxxxx.key.pem"]
+  - ["http.enable", false]
+  - ["wifi.sta.enable", true]
+  - ["wifi.sta.ssid", "bravokeyl"]
+  - ["wifi.sta.pass", "mongoose-os"]
+  - ["wifi.ap.enable", false]
+  - ["i2c.enable", false]
+  - ["debug.level", 3]
+
+# List of libraries used by this app, in order of initialisation
+# Don't know the order of libs and which libs are not needed so I added
+# morethan enough
+libs:
+  - origin: https://github.com/mongoose-os-libs/aws
+  - origin: https://github.com/mongoose-os-libs/mjs
+  - origin: https://github.com/mongoose-os-libs/rpc-common
+  - origin: https://github.com/mongoose-os-libs/rpc-mqtt
+  - origin: https://github.com/mongoose-os-libs/rpc-uart
+  - origin: https://github.com/mongoose-os-libs/rpc-loopback
+  - origin: https://github.com/mongoose-os-libs/rpc-service-config
+  - origin: https://github.com/mongoose-os-libs/rpc-service-fs
+  - origin: https://github.com/mongoose-os-libs/rpc-service-gpio
+  - origin: https://github.com/mongoose-os-libs/rpc-service-i2c
+  - origin: https://github.com/mongoose-os-libs/updater-rpc
+
+# Used by the mos tool to catch mos binaries incompatible with this file format
+skeleton_version: 2017-05-18
