@@ -31,3 +31,6 @@ This app does two things.
 - You can do this via mos tool ui or using command `mos aws-iot-setup --aws-iot-policy mos-default`
 - Create a thing in AWS IoT and you are done
 - Test this by going into AWS IoT MQTT test Console by subscribing to `mos/#` with QoS 1
+
+### Video
+[![Mongoose OS + AWS IoT](https://s3.amazonaws.com/mongoose-os/video-shot.png)](https://www.youtube.com/watch?v=2zZWANSQKqg "Mongoose OS + AWS IoT")

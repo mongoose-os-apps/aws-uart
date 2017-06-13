@@ -3,3 +3,4 @@
 *.bk
 build/
 node_modules/
+!ca-verisign-ecc-g2.crt.pem

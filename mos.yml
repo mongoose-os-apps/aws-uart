@@ -1,6 +1,6 @@
 author: bravokeyl <bravokeyl@gmail.com>
 description: Reading UART0 and sending the data to AWS IoT
-version: 1.0.0
+version: 1.0.1
 
 # You can remove this if you want to build for other boards
 arch: esp8266
@@ -50,7 +50,6 @@ libs:
   - origin: https://github.com/mongoose-os-libs/rpc-service-fs
   - origin: https://github.com/mongoose-os-libs/rpc-service-gpio
   - origin: https://github.com/mongoose-os-libs/rpc-service-i2c
-  - origin: https://github.com/mongoose-os-libs/updater-rpc
 
 # Used by the mos tool to catch mos binaries incompatible with this file format
 skeleton_version: 2017-05-18
