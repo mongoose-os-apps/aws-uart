@@ -28,7 +28,7 @@ config_schema:
   - ["mqtt.ssl_ca_cert", "ca-verisign-ecc-g2.crt.pem"]
   - ["mqtt.ssl_cert", "aws-iot-xxxxx.crt.pem"]
   - ["mqtt.ssl_key", "aws-iot-xxxxx.key.pem"]
-  - ["http.enable", false]
+  # - ["http.enable", false]
   - ["wifi.sta.enable", true]
   - ["wifi.sta.ssid", "bravokeyl"]
   - ["wifi.sta.pass", "mongoose-os"]
@@ -40,16 +40,16 @@ config_schema:
 # Don't know the order of libs and which libs are not needed so I added
 # morethan enough
 libs:
-  - origin: https://github.com/mongoose-os-libs/aws
-  - origin: https://github.com/mongoose-os-libs/mjs
+  # RPC libs
   - origin: https://github.com/mongoose-os-libs/rpc-common
+  - origin: https://github.com/mongoose-os-libs/rpc-loopback
   - origin: https://github.com/mongoose-os-libs/rpc-mqtt
   - origin: https://github.com/mongoose-os-libs/rpc-uart
-  - origin: https://github.com/mongoose-os-libs/rpc-loopback
   - origin: https://github.com/mongoose-os-libs/rpc-service-config
   - origin: https://github.com/mongoose-os-libs/rpc-service-fs
   - origin: https://github.com/mongoose-os-libs/rpc-service-gpio
-  - origin: https://github.com/mongoose-os-libs/rpc-service-i2c
 
+  - origin: https://github.com/mongoose-os-libs/aws
+  - origin: https://github.com/mongoose-os-libs/mjs
 # Used by the mos tool to catch mos binaries incompatible with this file format
 skeleton_version: 2017-05-18
