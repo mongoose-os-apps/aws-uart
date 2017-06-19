@@ -58,7 +58,7 @@ let getDeviceStaIP = function() {
 let getInfo = function() {
   return JSON.stringify({
     deviceId: deviceId ,
-    deviceStaIP: getDeviceStaIP(),
+    // deviceStaIP: getDeviceStaIP(),
     total_ram: Sys.total_ram(),
     free_ram: Sys.free_ram(),
     uptime: Sys.uptime(),

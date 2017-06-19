@@ -1,8 +1,8 @@
 {
   "name": "mos-aws",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.js",
-  "repository": "git@github.com:bravokeyl/mos-aws.git",
+  "repository": "git@github.com:mongoose-os-apps/aws-uart.git",
   "author": "bravokeyl <bravokeyl@gmail.com>",
   "license": "Apache-2.0"
 }
