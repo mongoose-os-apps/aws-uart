@@ -15,8 +15,10 @@ let relay = 5; // D1 on NodeMCU
 let reset = 4; // D2 on NodeMCU
 
 let deviceId = Cfg.get('device.id');
-let metaTopic = 'mos/devices/' + deviceId + '/meta';
+let metaTopic = 'devices/' + deviceId + '/meta';
 let topic = 'mos/'+ deviceId;
+
+let deviceStaIP = null;
 
 GPIO.set_mode(relay, GPIO.MODE_OUTPUT);
 GPIO.set_mode(reset, GPIO.MODE_OUTPUT);
@@ -41,9 +43,22 @@ let state = {
   p5: GPIO.read(5)
 };
 
+/* Get device's IP */
+let getDeviceStaIP = function() {
+  RPC.call(RPC.LOCAL, 'Sys.GetInfo', null, function (res, ud) {
+    if(res && res.wifi) {
+      deviceStaIP = res.wifi.sta_ip;
+    }
+  }, null);
+
+  return deviceStaIP;
+};
+
 /* ESP module meta info and the state data. */
 let getInfo = function() {
-  return JSON.stringify({ deviceId: deviceId ,
+  return JSON.stringify({
+    deviceId: deviceId ,
+    deviceStaIP: getDeviceStaIP(),
     total_ram: Sys.total_ram(),
     free_ram: Sys.free_ram(),
     uptime: Sys.uptime(),

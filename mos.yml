@@ -2,9 +2,6 @@ author: bravokeyl <bravokeyl@gmail.com>
 description: Reading UART0 and sending the data to AWS IoT
 version: 1.0.1
 
-# You can remove this if you want to build for other boards
-arch: esp8266
-
 # Optional. List of tags for online search.
 tags:
   - js
@@ -24,10 +21,10 @@ filesystem:
 # Custom configuration entries, settable via "device configuration"
 config_schema:
   - ["mqtt.enable", true]
-  - ["mqtt.server", "xxxxxxxx.iot.us-east-1.amazonaws.com:8883"]
+  - ["mqtt.server", "xxxx.iot.us-east-1.amazonaws.com:8883"]
   - ["mqtt.ssl_ca_cert", "ca-verisign-ecc-g2.crt.pem"]
-  - ["mqtt.ssl_cert", "aws-iot-xxxxx.crt.pem"]
-  - ["mqtt.ssl_key", "aws-iot-xxxxx.key.pem"]
+  - ["mqtt.ssl_cert", "aws-iot-xxxxxxxxxxx.crt.pem"]
+  - ["mqtt.ssl_key", "aws-iot-xxxxxxxxxxx.key.pem"]
   # - ["http.enable", false]
   - ["wifi.sta.enable", true]
   - ["wifi.sta.ssid", "bravokeyl"]
