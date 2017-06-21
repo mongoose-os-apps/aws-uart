@@ -17,6 +17,7 @@ let reset = 4; // D2 on NodeMCU
 let isConnected = false;
 
 let deviceId = Cfg.get('device.id');
+let macId = deviceId;
 let metaTopic = 'devices/' + deviceId + '/meta';
 let topic = 'mos/'+ deviceId;
 
@@ -47,20 +48,24 @@ let state = {
 
 /* Get device's IP */
 let getDeviceStaIP = function() {
-  // RPC.call(RPC.LOCAL, 'Sys.GetInfo', null, function (res, ud) {
-    // if(res && res.wifi) {
-    //   deviceStaIP = res.wifi.sta_ip;
-    // }
-  // }, null);
-
-  return JSON.stringify(deviceStaIP);
+  RPC.call(RPC.LOCAL, 'Sys.GetInfo', null, function (res, ud) {
+    print("RESPONSE:", JSON.stringify(res));
+    if(res && res.wifi) {
+      deviceStaIP = res.wifi.sta_ip;
+    }
+    if(res && res.mac) {
+      macId = res.mac;
+    }
+  }, null);
+  return JSON.stringify(null);
 };
 
 /* ESP module meta info and the state data. */
 let getInfo = function() {
   return JSON.stringify({
-    deviceId: deviceId ,
-    deviceStaIP: getDeviceStaIP(),
+    deviceId: deviceId,
+    macId: macId,
+    deviceStaIP: deviceStaIP,
     total_ram: Sys.total_ram(),
     free_ram: Sys.free_ram(),
     uptime: Sys.uptime(),
@@ -73,6 +78,7 @@ Net.setStatusEventHandler(function(ev){
   if(ev === 0) {
     print("WiFi DISCONNECTED - Event time:",Timer.now());
     isConnected = false;
+    deviceStaIP = {};
   }
   if(ev === 1) {
     print("WiFi CONNECTED - Event time:",Timer.now());
@@ -81,6 +87,7 @@ Net.setStatusEventHandler(function(ev){
   if(ev === 2) {
     print("Device got IP - Event time:",Timer.now());
     isConnected = true;
+    getDeviceStaIP();
   }
 },null);
 

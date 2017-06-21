@@ -1,6 +1,6 @@
 author: bravokeyl <bravokeyl@gmail.com>
 description: Reading UART0 and sending the data to AWS IoT
-version: 1.0.1
+version: 1.0.2
 
 # Optional. List of tags for online search.
 tags:
@@ -22,9 +22,10 @@ filesystem:
 config_schema:
   - ["mqtt.enable", true]
   - ["mqtt.server", "xxxx.iot.us-east-1.amazonaws.com:8883"]
-  - ["mqtt.ssl_ca_cert", "ca-verisign-ecc-g2.crt.pem"]
+  - ["mqtt.ssl_ca_cert", "ca-verisign-g5.crt.pem"]
   - ["mqtt.ssl_cert", "aws-iot-xxxxxxxxxxx.crt.pem"]
   - ["mqtt.ssl_key", "aws-iot-xxxxxxxxxxx.key.pem"]
+  - ["mqtt.ssl_cipher_suites", "TLS-ECDHE-RSA-WITH-AES-128-GCM-SHA256"]
   # - ["http.enable", false]
   - ["wifi.sta.enable", true]
   - ["wifi.sta.ssid", "bravokeyl"]
@@ -32,6 +33,7 @@ config_schema:
   - ["wifi.ap.enable", false]
   - ["i2c.enable", false]
   - ["debug.level", 3]
+  #- ["debug.mbedtls_level", 3]
 
 # List of libraries used by this app, in order of initialisation
 # Don't know the order of libs and which libs are not needed so I added

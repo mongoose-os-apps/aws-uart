@@ -4,3 +4,4 @@
 build/
 node_modules/
 !ca-verisign-ecc-g2.crt.pem
+!ca-verisign-g5.crt.pem
