@@ -6,6 +6,7 @@ load('api_timer.js');
 load('api_uart.js');
 load('api_rpc.js');
 load('api_aws.js');
+load('api_net.js');
 
 let uartNo = 0; // 1 for only debugging, no input
 let led = 2;
@@ -13,12 +14,13 @@ let LED_OFF = 0;
 let LED_ON = 1;
 let relay = 5; // D1 on NodeMCU
 let reset = 4; // D2 on NodeMCU
+let isConnected = false;
 
 let deviceId = Cfg.get('device.id');
 let metaTopic = 'devices/' + deviceId + '/meta';
 let topic = 'mos/'+ deviceId;
 
-let deviceStaIP = null;
+let deviceStaIP = {};
 
 GPIO.set_mode(relay, GPIO.MODE_OUTPUT);
 GPIO.set_mode(reset, GPIO.MODE_OUTPUT);
@@ -45,26 +47,42 @@ let state = {
 
 /* Get device's IP */
 let getDeviceStaIP = function() {
-  RPC.call(RPC.LOCAL, 'Sys.GetInfo', null, function (res, ud) {
-    if(res && res.wifi) {
-      deviceStaIP = res.wifi.sta_ip;
-    }
-  }, null);
+  // RPC.call(RPC.LOCAL, 'Sys.GetInfo', null, function (res, ud) {
+    // if(res && res.wifi) {
+    //   deviceStaIP = res.wifi.sta_ip;
+    // }
+  // }, null);
 
-  return deviceStaIP;
+  return JSON.stringify(deviceStaIP);
 };
 
 /* ESP module meta info and the state data. */
 let getInfo = function() {
   return JSON.stringify({
     deviceId: deviceId ,
-    // deviceStaIP: getDeviceStaIP(),
+    deviceStaIP: getDeviceStaIP(),
     total_ram: Sys.total_ram(),
     free_ram: Sys.free_ram(),
     uptime: Sys.uptime(),
     state: state,
   });
 };
+
+Net.setStatusEventHandler(function(ev){
+  print("WiFi Event:",ev);
+  if(ev === 0) {
+    print("WiFi DISCONNECTED - Event time:",Timer.now());
+    isConnected = false;
+  }
+  if(ev === 1) {
+    print("WiFi CONNECTED - Event time:",Timer.now());
+    isConnected = true;
+  }
+  if(ev === 2) {
+    print("Device got IP - Event time:",Timer.now());
+    isConnected = true;
+  }
+},null);
 
 /*
 The meat dispacther!! When the available buffer at UART 0 is greater 200bytes,
@@ -149,6 +167,10 @@ AWS.Shadow.setStateHandler(function(ud, ev, reported, desired, reported_md, desi
 /* Send ESP device meta to MQTT topic every second */
 Timer.set(1*1000 /* 1 sec */, true /* repeat */, function() {
   let message = getInfo();
-  let ok = MQTT.pub(metaTopic, message, 1);
-  print('Published:', ok ? 'yes' : 'no', 'topic:', topic, 'message:', message);
+  if(isConnected){
+    let ok = MQTT.pub(metaTopic, message, 1);
+    print('Published:', ok ? 'yes' : 'no', 'topic:', topic, 'message:', message);
+  } else {
+    print('Device not connected - message:', message);
+  }
 }, null);
