@@ -50,12 +50,14 @@ let state = {
 /* Get device's IP */
 let getDeviceStaIP = function() {
   RPC.call(RPC.LOCAL, 'Sys.GetInfo', null, function (res, ud) {
-    print("RESPONSE:", JSON.stringify(res));
-    if(res && res.wifi) {
-      deviceStaIP = res.wifi.sta_ip;
-    }
-    if(res && res.mac) {
-      macId = res.mac;
+    if(res){
+      print("RESPONSE:", JSON.stringify(res));
+      if(res.wifi) {
+        deviceStaIP = res.wifi.sta_ip;
+      }
+      if(res.mac) {
+        macId = res.mac;
+      }
     }
   }, null);
   return JSON.stringify({});
