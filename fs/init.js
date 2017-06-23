@@ -190,7 +190,7 @@ Timer.set(1*1000 /* 1 sec */, true /* repeat */, function() {
   if(isConnected) {
     if(isMQTTConnected){
       let ok = MQTT.pub(metaTopic, message, 1);
-      print('Published:', ok ? 'yes' : 'no', 'topic:', topic, 'message:', message);
+      print('Published:', ok ? 'yes' : 'no', 'topic:', metaTopic, 'message:', message);
     }
   } else {
     print('Device not connected - message:', message);
