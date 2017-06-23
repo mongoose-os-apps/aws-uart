@@ -31,7 +31,7 @@ config_schema:
   - ["wifi.sta.ssid", "bravokeyl"]
   - ["wifi.sta.pass", "mongoose-os"]
   - ["wifi.ap.enable", false]
-  - ["debug.level", 3]
+  - ["debug.level", 2] # Info Level
   #- ["debug.mbedtls_level", 3]
 
 # List of libraries used by this app, in order of initialisation

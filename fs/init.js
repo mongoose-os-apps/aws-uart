@@ -15,6 +15,7 @@ let LED_ON = 1;
 let relay = 5; // D1 on NodeMCU
 let reset = 4; // D2 on NodeMCU
 let isConnected = false;
+let isMQTTConnected = false;
 
 let deviceId = Cfg.get('device.id');
 let macId = deviceId;
@@ -57,7 +58,7 @@ let getDeviceStaIP = function() {
       macId = res.mac;
     }
   }, null);
-  return JSON.stringify(null);
+  return JSON.stringify({});
 };
 
 /* ESP module meta info and the state data. */
@@ -91,6 +92,18 @@ Net.setStatusEventHandler(function(ev){
   }
 },null);
 
+MQTT.setEventHandler(function(conn,ev,evdata){
+  // MG_EV_MQTT_CONNACK
+  if( ev === 202 ) {
+    isMQTTConnected = true;
+    print("MQTT Connection Acknowledge:", JSON.stringify(ev));
+  }
+  // MG_EV_MQTT_DISCONNECT
+  if( ev === 214 ) {
+    isMQTTConnected = false;
+    print("MQTT DisConnection:", JSON.stringify(ev));
+  }
+},null);
 /*
 The meat dispacther!! When the available buffer at UART 0 is greater 200bytes,
 we will send this data to the MQTT topic. In additon we also turn off the blue
@@ -174,9 +187,11 @@ AWS.Shadow.setStateHandler(function(ud, ev, reported, desired, reported_md, desi
 /* Send ESP device meta to MQTT topic every second */
 Timer.set(1*1000 /* 1 sec */, true /* repeat */, function() {
   let message = getInfo();
-  if(isConnected){
-    let ok = MQTT.pub(metaTopic, message, 1);
-    print('Published:', ok ? 'yes' : 'no', 'topic:', topic, 'message:', message);
+  if(isConnected) {
+    if(isMQTTConnected){
+      let ok = MQTT.pub(metaTopic, message, 1);
+      print('Published:', ok ? 'yes' : 'no', 'topic:', topic, 'message:', message);
+    }
   } else {
     print('Device not connected - message:', message);
   }
