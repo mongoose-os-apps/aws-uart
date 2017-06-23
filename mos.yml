@@ -31,7 +31,6 @@ config_schema:
   - ["wifi.sta.ssid", "bravokeyl"]
   - ["wifi.sta.pass", "mongoose-os"]
   - ["wifi.ap.enable", false]
-  - ["i2c.enable", false]
   - ["debug.level", 3]
   #- ["debug.mbedtls_level", 3]
 
