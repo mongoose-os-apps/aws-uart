@@ -26,6 +26,14 @@ This app does two things.
 
 - You can do this via mos tool ui or using command `mos wifi WIFI_NAME WIFI_PASSWORD`
 
+Note that `mos` talks to the device using RPC mechanism.
+RPC can talk over serial (uart), http, mqtt. By default, `mos` talks via uart.
+but aws-uart example takes over uart, therefore mos RPC does not work.
+You need to use another RPC channel - for example websocket. Therefore,
+update `mos.yml`, put your wifi credentials there, then build/flash,
+see what IP address is assigned to your board, and start mos as
+`mos --port ws://IP_ADDRESS/rpc`.
+
 ## Step 3: Set up and Provision AWS IoT thing, Policy
 
 - You can do this via mos tool ui or using command `mos aws-iot-setup --aws-iot-policy mos-default`
