@@ -1,6 +1,12 @@
 author: bravokeyl <bravokeyl@gmail.com>
 description: Reading UART0 and sending the data to AWS IoT
-version: 1.0.2
+version: 1.0.3
+
+# Used by the mos tool to catch mos binaries incompatible with this file format
+skeleton_version: 2017-05-18
+libs_version: ${mos_version}
+modules_version: ${mos_version}
+mongoose_os_version: ${mos_version}
 
 # Optional. List of tags for online search.
 tags:
@@ -49,5 +55,4 @@ libs:
 
   - origin: https://github.com/mongoose-os-libs/aws
   - origin: https://github.com/mongoose-os-libs/mjs
-# Used by the mos tool to catch mos binaries incompatible with this file format
-skeleton_version: 2017-05-18
+  - origin: https://github.com/mongoose-os-libs/wifi

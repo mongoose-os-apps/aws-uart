@@ -76,21 +76,25 @@ let getInfo = function() {
   });
 };
 
-Net.setStatusEventHandler(function(ev){
+Net.setStatusEventHandler(function(ev, arg){
   print("WiFi Event:",ev);
-  if(ev === 0) {
+  if(ev === Net.STATUS_DISCONNECTED) {
     print("WiFi DISCONNECTED - Event time:",Timer.now());
     isConnected = false;
     deviceStaIP = {};
   }
-  if(ev === 1) {
+  if(ev === Net.STATUS_CONNECTING) {
+    print("WiFi CONNECTING - Event time:",Timer.now());
+    isConnected = false;
+  }
+  if(ev === Net.STATUS_CONNECTED) {
     print("WiFi CONNECTED - Event time:",Timer.now());
     isConnected = true;
   }
-  if(ev === 2) {
+  if(ev === Net.STATUS_GOT_IP) {
     print("Device got IP - Event time:",Timer.now());
     isConnected = true;
-    getDeviceStaIP();
+    //getDeviceStaIP();
   }
 },null);
 
@@ -187,7 +191,7 @@ AWS.Shadow.setStateHandler(function(ud, ev, reported, desired, reported_md, desi
 }, null);
 
 /* Send ESP device meta to MQTT topic every second */
-Timer.set(1*1000 /* 1 sec */, true /* repeat */, function() {
+Timer.set(10*1000 /* 1 sec */, true /* repeat */, function() {
   let message = getInfo();
   if(isConnected) {
     if(isMQTTConnected){
