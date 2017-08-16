@@ -1,6 +1,6 @@
 author: bravokeyl <bravokeyl@gmail.com>
 description: Reading UART0 and sending the data to AWS IoT
-version: 1.0.3
+version: 1.0.4
 
 # Used by the mos tool to catch mos binaries incompatible with this file format
 skeleton_version: 2017-05-18
