@@ -73,6 +73,7 @@ let getInfo = function() {
     free_ram: Sys.free_ram(),
     uptime: Sys.uptime(),
     state: state,
+    t: Timer.now()
   });
 };
 
@@ -100,7 +101,7 @@ Net.setStatusEventHandler(function(ev, arg){
 
 MQTT.setEventHandler(function(conn,ev,evdata){
   // MG_EV_MQTT_CONNACK
-  if( ev === 202 ) {
+  if( ev === MQTT.EV_CONNACK ) {
     isMQTTConnected = true;
     print("MQTT Connection Acknowledge:", JSON.stringify(ev));
   }
@@ -195,7 +196,7 @@ Timer.set(10*1000 /* 1 sec */, true /* repeat */, function() {
   let message = getInfo();
   if(isConnected) {
     if(isMQTTConnected){
-      let ok = MQTT.pub(metaTopic, message, 1);
+      let ok = MQTT.pub(metaTopic, message, 1, false);
       print('Published:', ok ? 'yes' : 'no', 'topic:', metaTopic, 'message:', message);
     }
   } else {
