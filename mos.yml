@@ -1,6 +1,6 @@
 author: bravokeyl <bravokeyl@gmail.com>
 description: Reading UART0 and sending the data to AWS IoT
-version: 1.0.4
+version: 1.0.6
 
 libs_version: ${mos.version}
 modules_version: ${mos.version}
@@ -22,44 +22,11 @@ sources:
 filesystem:
   - fs
 
-# Custom configuration entries, settable via "device configuration"
-config_schema:
-  - ["mqtt.enable", true]
-  - ["mqtt.server", "xxxx.iot.us-east-1.amazonaws.com:8883"]
-  - ["mqtt.ssl_ca_cert", "ca-verisign-g5.crt.pem"]
-  - ["mqtt.ssl_cert", "aws-iot-xxxxxxxxxxx.crt.pem"]
-  - ["mqtt.ssl_key", "aws-iot-xxxxxxxxxxx.key.pem"]
-  - ["mqtt.ssl_cipher_suites", "TLS-ECDHE-RSA-WITH-AES-128-GCM-SHA256"]
-  # - ["http.enable", false]
-  - ["wifi.sta.enable", true]
-  - ["wifi.sta.ssid", "bravokeyl"]
-  - ["wifi.sta.pass", "mongoose-os"]
-  - ["wifi.ap.enable", false]
-  - ["debug.level", 2] # Info Level
-  #- ["debug.mbedtls_level", 3]
-
 # List of libraries used by this app, in order of initialisation
 # Don't know the order of libs and which libs are not needed so I added
 # morethan enough
 libs:
-libs:
   # common mgos libs
-  # - origin: https://github.com/mongoose-os-libs/ca-bundle
-  - origin: https://github.com/mongoose-os-libs/http-server
-  - origin: https://github.com/mongoose-os-libs/ota-http-server
-  - origin: https://github.com/mongoose-os-libs/rpc-common
-  - origin: https://github.com/mongoose-os-libs/rpc-loopback
-  - origin: https://github.com/mongoose-os-libs/rpc-mqtt
-  - origin: https://github.com/mongoose-os-libs/rpc-uart
-  - origin: https://github.com/mongoose-os-libs/rpc-service-config
-  - origin: https://github.com/mongoose-os-libs/rpc-service-fs
-  - origin: https://github.com/mongoose-os-libs/rpc-service-gpio
-  - origin: https://github.com/mongoose-os-libs/rpc-service-ota
-  # - origin: https://github.com/mongoose-os-libs/rpc-service-wifi
-  - origin: https://github.com/mongoose-os-libs/wifi
-
-  - origin: https://github.com/mongoose-os-libs/aws
-  - origin: https://github.com/mongoose-os-libs/mjs
-
+  - origin: https://github.com/mongoose-os-libs/js-demo-bundle
 # Used by the mos tool to catch mos binaries incompatible with this file format
 manifest_version: 2017-05-18

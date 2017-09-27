@@ -18,11 +18,9 @@ let isConnected = false;
 let isMQTTConnected = false;
 
 let deviceId = Cfg.get('device.id');
-let macId = deviceId;
 let metaTopic = 'devices/' + deviceId + '/meta';
 let topic = 'mos/'+ deviceId;
-
-let deviceStaIP = {};
+let ct = 'mcu/'+deviceId+'/control';
 
 GPIO.set_mode(relay, GPIO.MODE_OUTPUT);
 GPIO.set_mode(reset, GPIO.MODE_OUTPUT);
@@ -47,28 +45,10 @@ let state = {
   p5: GPIO.read(5)
 };
 
-/* Get device's IP */
-let getDeviceStaIP = function() {
-  RPC.call(RPC.LOCAL, 'Sys.GetInfo', null, function (res, ud) {
-    if(res){
-      print("RESPONSE:", JSON.stringify(res));
-      if(res.wifi) {
-        deviceStaIP = res.wifi.sta_ip;
-      }
-      if(res.mac) {
-        macId = res.mac;
-      }
-    }
-  }, null);
-  return JSON.stringify({});
-};
-
 /* ESP module meta info and the state data. */
 let getInfo = function() {
   return JSON.stringify({
     deviceId: deviceId,
-    macId: macId,
-    deviceStaIP: deviceStaIP,
     total_ram: Sys.total_ram(),
     free_ram: Sys.free_ram(),
     uptime: Sys.uptime(),
@@ -80,22 +60,20 @@ let getInfo = function() {
 Net.setStatusEventHandler(function(ev, arg){
   print("WiFi Event:",ev);
   if(ev === Net.STATUS_DISCONNECTED) {
-    print("WiFi DISCONNECTED - Event time:",Timer.now());
+    print("WiFi DISCONNECTED");
     isConnected = false;
-    deviceStaIP = {};
   }
   if(ev === Net.STATUS_CONNECTING) {
-    print("WiFi CONNECTING - Event time:",Timer.now());
+    print("WiFi CONNECTING");
     isConnected = false;
   }
   if(ev === Net.STATUS_CONNECTED) {
-    print("WiFi CONNECTED - Event time:",Timer.now());
+    print("WiFi CONNECTED");
     isConnected = true;
   }
   if(ev === Net.STATUS_GOT_IP) {
-    print("Device got IP - Event time:",Timer.now());
+    print("Device got IP");
     isConnected = true;
-    //getDeviceStaIP();
   }
 },null);
 
@@ -103,6 +81,7 @@ MQTT.setEventHandler(function(conn,ev,evdata){
   // MG_EV_MQTT_CONNACK
   if( ev === MQTT.EV_CONNACK ) {
     isMQTTConnected = true;
+    bu();
     print("MQTT Connection Acknowledge:", JSON.stringify(ev));
   }
   // MG_EV_MQTT_DISCONNECT
@@ -116,23 +95,26 @@ The meat dispacther!! When the available buffer at UART 0 is greater 200bytes,
 we will send this data to the MQTT topic. In additon we also turn off the blue
 led (default one) whenever the data is available and being sent.
 */
-UART.setDispatcher(uartNo, function(uartNo, ud) {
-  let ra = UART.readAvail(uartNo);
-  let oa = UART.writeAvail(uartNo);
-  if ( ra > 200 ) { // read buffer > 200 bytes
-    let data = UART.read(uartNo);
-    print("Received UART data:", data);
-    let res = MQTT.pub(topic, JSON.stringify({ "data": data }), 1);
-    if(res){
-      GPIO.write(led,1);
-    } else {
-      GPIO.write(led,0);
+function bu(){
+  UART.setDispatcher(uartNo, function(uartNo, ud) {
+    // print("UART dispacther - uart:",uartNo);
+    let ra = UART.readAvail(uartNo);
+    let oa = UART.writeAvail(uartNo);
+    if ( ra > 200 ) { // read buffer > 200 bytes
+      let data = UART.read(uartNo);
+      print("Received UART data:", data);
+      let res = MQTT.pub(topic, JSON.stringify({ "data": data }), 1);
+      if(res){
+        GPIO.write(led,1);
+      } else {
+        GPIO.write(led,0);
+      }
+      print('Published: ', res ? 'yes' : 'no', 'Response',res);
     }
-    print('Published: ', res ? 'yes' : 'no', 'Response',res);
-  }
-}, null);
+  }, null);
 
-UART.setRxEnabled(uartNo, true);
+  UART.setRxEnabled(uartNo, true);
+}
 
 /* Updating pins and led based on the state */
 function updateLed() {
@@ -167,7 +149,6 @@ updateLed();
 /* AWS Shadow logic */
 AWS.Shadow.setStateHandler(function(ud, ev, reported, desired, reported_md, desired_md) {
   print('Event:', ev, '('+AWS.Shadow.eventName(ev)+')');
-
   if (ev === AWS.Shadow.CONNECTED) {
     reportState();
     return;
@@ -191,9 +172,28 @@ AWS.Shadow.setStateHandler(function(ud, ev, reported, desired, reported_md, desi
   }
 }, null);
 
+MQTT.sub(ct, function(conn, topic, msg) {
+  let m = JSON.parse(msg);
+  print('Topic:', topic, 'message:', msg, "Reset:",m.reset,"Relay:",m.relay);
+
+  if(m.reset === "1") {
+    GPIO.write(reset,0);
+  }
+  if (m.reset === "0") {
+    GPIO.write(reset,1);
+  }
+  if(m.relay === "1") {
+    GPIO.write(relay,1);
+  }
+  if (m.relay === "0") {
+    GPIO.write(relay,0);
+  }
+
+}, null);
 /* Send ESP device meta to MQTT topic every second */
 Timer.set(10*1000 /* 1 sec */, true /* repeat */, function() {
   let message = getInfo();
+
   if(isConnected) {
     if(isMQTTConnected){
       let ok = MQTT.pub(metaTopic, message, 1, false);
