@@ -3,7 +3,7 @@
 ## Overview
 This app does two things.
 - Reading UART 0 of ESP8266 and sending it to AWS IoT
-- Sending device meta data and two pins state to AWS IoT
+- Sending device metadata and two pins state to AWS IoT
 
 ## How to install this app
 
@@ -17,14 +17,17 @@ This app does two things.
   <img src="https://mongoose-os.com/images/app1.gif" width="75%">
 </p>
 
-##### If app not available in MOS tool UI
+##### Flash the app through command line
 
 - Clone this repo ```git clone https://github.com/mongoose-os-apps/aws-uart```
-- Go into the directory `aws-uart` and run `mos ui` which opens the project in UI
+- Go into the directory `aws-uart` and run `mos build --arch esp8266` ( Change the arch respectively )
+- After that, you should see a **build** directory in the current directory which will have the `fw.zip` binary
+- Run ```mos flash``` which flashes the current build
+- Run ```mos console``` and check
 
 ## Step 2: Set up Wi-Fi
 
-- You can do this via mos tool ui or using command `mos wifi WIFI_NAME WIFI_PASSWORD`
+- You can do this via mos tool UI or use command `mos wifi WIFI_NAME WIFI_PASSWORD`
 
 Note that `mos` talks to the device using RPC mechanism.
 RPC can talk over serial (uart), http, mqtt. By default, `mos` talks via uart.
@@ -36,7 +39,7 @@ see what IP address is assigned to your board, and start mos as
 
 ## Step 3: Set up and Provision AWS IoT thing, Policy
 
-- You can do this via mos tool ui or using command `mos aws-iot-setup --aws-iot-policy mos-default`
+- You can do this via mos tool UI or use command `mos aws-iot-setup --aws-iot-policy mos-default`
 - Create a thing in AWS IoT and you are done
 - Test this by going into AWS IoT MQTT test Console by subscribing to `mos/#` with QoS 1
 
