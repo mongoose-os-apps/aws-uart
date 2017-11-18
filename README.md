@@ -19,8 +19,8 @@ This app does two things.
 
 ##### If app not available in MOS tool UI
 
-- Clone this repo ```git clone https://github.com/bravokeyl/mos-aws.git```
-- Go into the directory `mos-aws` and run `mos ui` which opens the project in UI
+- Clone this repo ```git clone https://github.com/mongoose-os-apps/aws-uart```
+- Go into the directory `aws-uart` and run `mos ui` which opens the project in UI
 
 ## Step 2: Set up Wi-Fi
 
